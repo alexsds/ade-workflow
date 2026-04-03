@@ -47,3 +47,25 @@ Evaluate: No dead buttons or broken links. Forms validate inline. Loading states
 - 5-6: Acceptable — functional but generic or rough
 - 3-4: Below standards — inconsistent, template-looking, or confusing
 - 1-2: Failing — broken, incoherent, or unusable
+
+## Calibration Examples
+
+These few-shot examples help calibrate consistent scoring:
+
+**Design Quality — Score 8:**
+A dashboard with a warm amber/slate color palette. All cards use the same border style, typography scale, and spacing rhythm. The sidebar, header, and content area feel like parts of the same product. Minor: the footer feels slightly detached.
+
+**Design Quality — Score 5:**
+A page where the hero section uses a blue gradient, the cards below use flat gray backgrounds, and the footer switches to dark mode. Each section works individually but they don't feel like the same app.
+
+**Originality — Score 8:**
+A task manager using an earth-tone palette with clay-colored cards, hand-drawn-style icons, and a warm paper texture background. Feels intentional and distinctive — not something you'd mistake for a template.
+
+**Originality — Score 4:**
+Purple-to-blue gradient header, white card grid with rounded corners and subtle shadows, sans-serif font. This is the default Claude/AI visual pattern and should be penalized.
+
+**Craft — Score 8:**
+Clear h1/h2/body hierarchy, consistent 4px spacing scale, AA contrast on all text, smooth transitions on hover states, layout holds at 375px/768px/1280px breakpoints.
+
+**Craft — Score 5:**
+Font sizes vary inconsistently, some elements have 8px padding while others use 16px, contrast fails on light gray text, layout breaks on mobile.
