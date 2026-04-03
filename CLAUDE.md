@@ -4,6 +4,14 @@
 
 A Claude Code plugin implementing Anthropic's 3-agent harness pattern (Planner, Generator, Evaluator) for long-running app development. Based on research from https://www.anthropic.com/engineering/harness-design-long-running-apps
 
+## Architecture
+
+Skills are the source of truth for methodology. Agents are thin execution shells that reference skills. Commands are orchestration entry points.
+
+- `skills/` — methodology, knowledge, the "why" and "how" (single source of truth)
+- `agents/` — execution shells that read skills for guidance
+- `commands/` — user-facing entry points that invoke agents
+
 ## Development
 
 This is a Claude Code plugin. Structure follows plugin-dev conventions:
@@ -13,6 +21,9 @@ This is a Claude Code plugin. Structure follows plugin-dev conventions:
 - `skills/` — skill directories with SKILL.md (auto-discovered)
 - `hooks/` — event hooks
 - `scripts/` — utility scripts
+- `rubrics/` — default evaluation rubrics (referenced by evaluator skill)
+- `testing-tools/` — default testing tool configs (referenced by evaluator skill)
+- `.mcp.json` — Playwright MCP for browser-based evaluation
 
 ## Key Principles
 
@@ -20,11 +31,12 @@ This is a Claude Code plugin. Structure follows plugin-dev conventions:
 - Agent descriptions need `<example>` blocks for reliable triggering
 - Use `${CLAUDE_PLUGIN_ROOT}` for all internal paths, never hardcode
 - Rubrics and testing-tools are pluggable — defaults in plugin, overrides in .ade/
-- Planner = subagent (one-shot). Generator + Evaluator = agent team (SendMessage)
+- Planner = subagent (interactive, one-shot). Generator + Evaluator = agent team (SendMessage)
+- Skills hold the methodology, agents reference them — one place to update
 
 ## Commit Style
 
-Use conventional commits: `feat:`, `fix:`, `docs:`, `chore:`
+Use conventional commits: `feat:`, `fix:`, `docs:`, `chore:`. Single-line messages.
 
 ## Commands
 
@@ -47,7 +59,7 @@ Plugin ships default `rubrics/` and `testing-tools/`. Projects override by placi
 
 ## Default Testing Tools
 
-- `testing-tools/playwright.md` — Browser-based UI testing
+- `testing-tools/playwright.md` — Browser-based UI testing (Playwright MCP, fallback to curl)
 - `testing-tools/api-tester.md` — API endpoint testing
 - `testing-tools/unit-test-runner.md` — Unit test execution
 
