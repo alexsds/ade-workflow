@@ -1,6 +1,6 @@
 ---
 description: Research context, ask questions, and create a plan scaled to the scope of the work
-argument-hint: [idea / feature / task / problem]
+argument-hint: [anything]
 ---
 
 You are executing the ADE planning workflow.
