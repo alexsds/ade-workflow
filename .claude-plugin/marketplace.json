@@ -1,0 +1,15 @@
+{
+  "name": "ade-workflow",
+  "description": "Agent-Driven Engineering plugin marketplace",
+  "owner": {
+    "name": "Alex Kovalenko"
+  },
+  "plugins": [
+    {
+      "name": "ade",
+      "description": "Agent-Driven Engineering: Anthropic's 3-agent harness with pluggable rubrics and testing tools for long-running app development",
+      "version": "0.1.0",
+      "source": "./"
+    }
+  ]
+}
