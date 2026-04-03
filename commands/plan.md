@@ -3,7 +3,7 @@ description: Research context, ask questions, and create a plan scaled to the sc
 argument-hint: [anything]
 ---
 
-You are executing the ADE planning workflow. Follow these steps yourself — do NOT spawn a subagent for planning. The planner needs to ask the user questions interactively, which requires staying in the main conversation.
+You are executing the ADE planning workflow. Follow these steps yourself — do NOT spawn a subagent or agent for planning. The planner needs to ask the user questions interactively, which requires staying in the main conversation.
 
 **Step 1: Check for project initialization**
 
@@ -18,15 +18,38 @@ Read `.claude/ade.local.md` if it exists. Note the `commits_style` value.
 
 Read `${CLAUDE_PLUGIN_ROOT}/skills/ade-planning/SKILL.md` and follow it step by step for: $ARGUMENTS
 
-The methodology covers:
+**Step 4: Research**
 
-1. **Assess scope** — Determine if this is large (full app), medium (feature), or small (task/bug). This controls the depth of everything that follows.
-2. **Research** — Explore the codebase, find relevant code, or search for similar products. Share findings with the user.
-3. **Ask questions** — Scaled to scope: 3-5 for large, 1-3 for medium, 0-1 for small. Multiple-choice with suggested answers. If `commits_style` is jira, ask for the ticket number.
-4. **Propose approaches** — If research reveals a genuine fork in direction, present 2-3 options. Skip if direction is clear or scope is small.
-5. **Write the plan** — Structure matches scope: phased features with user stories (large), deliverables with acceptance criteria (medium), or goal + done-when (small). Write to `.ade/docs/plans/plan-YYYY-MM-DD.md`.
-6. **Ask for review** — Present the plan and wait for user approval.
+Explore the codebase (existing project) or search for similar products (greenfield). Share a summary of your findings with the user.
 
-**Step 4: Wait for approval**
+**Step 5: Ask questions interactively**
 
-After the plan is written, tell the user to review it. Do NOT proceed to building until the user explicitly approves the plan.
+This is critical — ask questions ONE AT A TIME. After each question, STOP and wait for the user's response before asking the next one. Do NOT ask multiple questions at once. Do NOT skip questions. Do NOT write the plan until you've finished asking.
+
+Format every question like this:
+
+```
+What platform should this run on?
+
+  a) Web app — works in any browser, easiest to build
+  b) Mobile-first web app — responsive, installable as PWA
+  c) Native mobile app — iOS/Android
+  d) Something else — tell me more
+```
+
+How many questions depends on scope:
+- Large (full app): 3-5 questions
+- Medium (feature): 1-3 questions
+- Small (task/bug): 0-1 questions
+
+After sharing research findings, ask your first question and STOP. Wait for the answer. Then ask the next question and STOP. Repeat until done.
+
+**Step 6: Write the plan**
+
+Only after all questions are answered, write the plan to `.ade/docs/plans/plan-YYYY-MM-DD.md`. Structure matches scope per the methodology in the skill.
+
+**Step 7: Wait for approval**
+
+Tell the user: "Plan written to `.ade/docs/plans/plan-YYYY-MM-DD.md`. Please review and let me know if you'd like changes. Once approved, use `/ade:execute` to start implementation."
+
+Do NOT proceed to building until the user explicitly approves.
