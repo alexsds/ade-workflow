@@ -93,10 +93,13 @@ commits_style: conventional    # conventional | jira
 
 ## Install
 
-From GitHub:
+Inside a Claude Code session:
 ```
-claude plugin add https://github.com/alexsds/ade-workflow
+/plugin marketplace add alexsds/ade-workflow
+/plugin install ade@alexsds-ade-workflow
 ```
+
+Or run `/plugin` to open the interactive plugin manager.
 
 ## Why This Architecture
 
