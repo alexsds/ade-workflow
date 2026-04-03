@@ -86,7 +86,7 @@ commits_style: conventional    # conventional | jira
 
 | Command | Description |
 |---------|------------|
-| `/ade:plan [idea / feature / task / problem]` | Research, ask questions, create plan |
+| `/ade:plan [anything]` | Research, ask questions, create plan scaled to scope |
 | `/ade:execute` | Launch Generator + Evaluator team |
 | `/ade:done` | Archive completed plan |
 | `/ade:status` | Show build progress |
