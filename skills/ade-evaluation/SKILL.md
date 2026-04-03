@@ -1,7 +1,7 @@
 ---
 name: ade-evaluation
 description: This skill should be used when the user asks about evaluation methodology, scoring rubrics, testing tools, "how does scoring work", "evaluation criteria", "rubric format", "add a rubric", "create testing tool", "evaluate my feature", "run evaluation", "why did evaluation fail", or needs guidance on adversarial evaluation, graded scoring, or hard thresholds in the ADE workflow. Make sure to use this skill whenever the user mentions quality assessment, code review scoring, feature validation, or wants to understand why a feature passed or failed evaluation.
-version: 0.2.0
+version: 0.1.0
 ---
 
 # ADE Evaluation

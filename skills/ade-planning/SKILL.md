@@ -1,7 +1,7 @@
 ---
 name: ade-planning
 description: Use when the user wants to plan any work — building an app, adding a feature, fixing a bug, solving a problem, refactoring, or any task that benefits from thinking before doing. Triggers on "plan", "build me", "I want to", "fix this", "add a", "we need to", "how should we", or when the user describes something they want done. This skill guides interactive discovery, research, and planning scaled to the scope of the work — from a quick task plan to a full product spec.
-version: 0.3.0
+version: 0.1.0
 ---
 
 # ADE Planning
