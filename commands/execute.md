@@ -18,32 +18,48 @@ Read `.claude/ade.local.md` for commit style configuration.
 
 Update the plan's frontmatter status from `draft`/`approved` to `in-progress`.
 
-**Step 4: Launch the agent team**
+**Step 4: Create the team**
 
-Use TeamCreate to create the build team:
-
-```
-TeamCreate:
-  name: "ade-build"
-  members:
-    - name: "generator"
-      agent: "ade-generator"
-    - name: "evaluator"
-      agent: "ade-evaluator"
+Use the TeamCreate tool:
+```json
+{
+  "team_name": "ade-build",
+  "description": "Generator + Evaluator building from approved plan"
+}
 ```
 
-Tell the Generator to start with the first feature in the plan.
+**Step 5: Create tasks from the plan**
 
-**How the team communicates:**
+Read the plan and create a task (using TaskCreate) for each feature/deliverable. These tasks form the shared task list the team works from.
 
-1. Generator reads the plan, implements a feature, self-verifies, commits to git
-2. Generator sends to evaluator via SendMessage: feature name, files changed, how to test
-3. Evaluator loads rubrics from `${CLAUDE_PLUGIN_ROOT}/rubrics/` and `.ade/rubrics/`, loads testing tools from `${CLAUDE_PLUGIN_ROOT}/testing-tools/` and `.ade/testing-tools/`
-4. Evaluator tests the feature, scores against rubric criteria, sends pass/fail + feedback to generator
-5. If any criterion fails: Generator iterates and re-submits
-6. If all pass: Generator moves to next feature in the plan
-7. Loop until all features are complete
+**Step 6: Spawn teammates**
 
-**Step 5: Monitor progress**
+Spawn both teammates using the Agent tool with `team_name: "ade-build"`:
 
-As features are completed, track progress. When all features in the plan are implemented and approved by the Evaluator, notify the user that the build is complete and suggest running `/ade:done` to archive the plan.
+**Generator** — spawn with:
+- `name`: "generator"
+- `team_name`: "ade-build"
+- `subagent_type`: use the ade-generator agent
+- `prompt`: Tell it to read the plan, read `${CLAUDE_PLUGIN_ROOT}/skills/ade-generation/SKILL.md` for methodology, check the task list, claim the first feature task, implement it, self-verify, commit to git, then message the evaluator via SendMessage (to: "evaluator") with: feature name, files changed, how to test. After evaluator responds, iterate if needed. When approved, mark task complete, claim next task.
+
+**Evaluator** — spawn with:
+- `name`: "evaluator"
+- `team_name`: "ade-build"
+- `subagent_type`: use the ade-evaluator agent
+- `prompt`: Tell it to read `${CLAUDE_PLUGIN_ROOT}/skills/ade-evaluation/SKILL.md` for methodology, then wait for messages from the generator. When a feature is submitted, load rubrics from `${CLAUDE_PLUGIN_ROOT}/rubrics/` and `.ade/rubrics/`, load testing tools from `${CLAUDE_PLUGIN_ROOT}/testing-tools/` and `.ade/testing-tools/`, test the feature, score against rubric criteria, then message the generator via SendMessage (to: "generator") with the scored report. If all criteria pass, say APPROVED. If any fail, say FAILED with specific fixes.
+
+**Step 7: Monitor progress**
+
+The team communicates via SendMessage. The workflow per feature:
+1. Generator implements feature, commits, messages evaluator
+2. Evaluator tests, scores, messages generator with pass/fail
+3. If failed: Generator iterates, re-submits
+4. If passed: Generator marks task complete, moves to next feature
+
+When all tasks are complete, send teammates a shutdown message:
+```json
+SendMessage({ to: "generator", message: { type: "shutdown_request" } })
+SendMessage({ to: "evaluator", message: { type: "shutdown_request" } })
+```
+
+Then notify the user that the build is complete and suggest running `/ade:done` to archive the plan.
