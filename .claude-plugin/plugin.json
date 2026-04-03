@@ -1,10 +1,12 @@
 {
   "name": "ade",
   "description": "Agent-Driven Engineering: Anthropic's 3-agent harness with pluggable rubrics and testing tools for long-running app development",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "ADE Contributors"
   },
+  "repository": "https://github.com/alexsds/ade-workflow",
+  "homepage": "https://github.com/alexsds/ade-workflow#readme",
   "license": "MIT",
   "keywords": [
     "agents",
