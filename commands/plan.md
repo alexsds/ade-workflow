@@ -1,6 +1,6 @@
 ---
-description: Research context, ask questions, and generate a product-level plan for an app idea
-argument-hint: [app idea]
+description: Research context, ask questions, and create a plan scaled to the scope of the work
+argument-hint: [idea / feature / task / problem]
 ---
 
 You are executing the ADE planning workflow.
@@ -20,11 +20,12 @@ Use the ade-planner agent to plan: $ARGUMENTS
 
 The planner follows the methodology in `${CLAUDE_PLUGIN_ROOT}/skills/ade-planning/SKILL.md`. It will:
 
-1. **Research** — Explore the codebase (if existing project) or search for similar products (if greenfield). Check prior plans in `.ade/docs/`. Share findings with the user.
-2. **Ask questions** — Ask 2-3 essential questions one at a time with multiple-choice suggested answers. Ask follow-ups if answers are vague. If `commits_style` is jira, ask for the ticket number.
-3. **Propose approaches** — If research reveals a genuine fork in direction, present 2-3 options with trade-offs and a recommendation. Skip if direction is clear.
-4. **Write the plan** — Expand into features with user stories, write to `.ade/docs/plans/plan-YYYY-MM-DD.md`.
-5. **Ask for review** — Present the plan and wait for user approval.
+1. **Assess scope** — Determine if this is large (full app), medium (feature), or small (task/bug). This controls the depth of everything that follows.
+2. **Research** — Explore the codebase, find relevant code, or search for similar products. Share findings with the user.
+3. **Ask questions** — Scaled to scope: 3-5 for large, 1-3 for medium, 0-1 for small. Multiple-choice with suggested answers. If `commits_style` is jira, ask for the ticket number.
+4. **Propose approaches** — If research reveals a genuine fork in direction, present 2-3 options. Skip if direction is clear or scope is small.
+5. **Write the plan** — Structure matches scope: phased features with user stories (large), deliverables with acceptance criteria (medium), or goal + done-when (small). Write to `.ade/docs/plans/plan-YYYY-MM-DD.md`.
+6. **Ask for review** — Present the plan and wait for user approval.
 
 **Step 4: Wait for approval**
 

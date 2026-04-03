@@ -1,30 +1,34 @@
 ---
 name: ade-planning
-description: Use when the user describes an app idea, wants to plan a new application or feature, mentions "plan an app", "I have an app idea", "build me an app", "scope out", or describes something they want to build. This skill guides interactive discovery, research, and product-level planning before implementation. Always use this before building anything — the planning step prevents cascading errors from premature implementation.
-version: 0.2.0
+description: Use when the user wants to plan any work — building an app, adding a feature, fixing a bug, solving a problem, refactoring, or any task that benefits from thinking before doing. Triggers on "plan", "build me", "I want to", "fix this", "add a", "we need to", "how should we", or when the user describes something they want done. This skill guides interactive discovery, research, and planning scaled to the scope of the work — from a quick task plan to a full product spec.
+version: 0.3.0
 ---
 
 # ADE Planning
 
 ## Overview
 
-Product-level planning for application development. Anthropic's research found that high-level plans outperform micro-detailed technical specs — a single error in technical planning cascades through every level of implementation. The planner stays at the product level (features, user stories, success criteria) and lets the Generator figure out how to build it.
+Planning before building — scaled to the scope of the work. Anthropic's research found that a single error in technical planning cascades through every level of implementation. The planner stays at the deliverable level (what, not how) and lets the Generator figure out implementation.
 
-The planner is interactive. Rather than taking a brief prompt and running with assumptions, it researches context and asks targeted questions with suggested answers to understand what the user actually wants before writing the plan.
+The planner is interactive. It researches context, asks targeted questions with suggested answers, and writes a plan whose depth matches the scope of the work.
 
-## Planning Flow
+## Step 0: Assess Scope
 
-```
-User describes what they want to build
-  → Check project context
-  → Research phase (codebase and/or external)
-  → Share research findings
-  → Ask essential questions with suggested answers
-  → If answers are vague, ask follow-up questions
-  → If ambiguous fork detected, propose 2-3 approaches
-  → Write the full plan
-  → User reviews and approves
-```
+Read the user's request and assess scope. This determines how deep the planning process goes.
+
+**Large** — Full application, multi-feature project, new product
+- Examples: "build me a task management app", "create a SaaS dashboard", "I want to build a marketplace"
+- Full planning flow: research → 3-5+ questions → possibly propose approaches → phased plan with user stories
+
+**Medium** — New feature, significant change, integration
+- Examples: "add a notification system", "integrate Stripe payments", "build a settings page"
+- Moderate flow: codebase research → 1-3 questions → focused plan with deliverables
+
+**Small** — Bug fix, task, refactor, minor change
+- Examples: "fix the login bug", "refactor the auth module", "our API is too slow", "add dark mode toggle"
+- Light flow: quick codebase research → 0-1 questions → short plan with acceptance criteria
+
+The scope determines how many questions to ask, how deep to research, and how detailed the plan is. Don't run a full product planning cycle for a bug fix. Don't write a one-liner plan for a new app.
 
 ## Step 1: Check Project Context
 
@@ -38,85 +42,84 @@ Before asking any questions:
 
 ## Step 2: Research
 
-Research what's relevant before asking questions. This is not optional — informed questions produce better plans than generic ones.
+Research what's relevant before asking questions. Scale depth to scope.
 
 **Existing project (has source code):**
 - Explore the codebase: tech stack, dependencies, file structure, patterns
-- Read existing README, docs, or config files
-- Understand what already exists so the plan builds on it, not duplicates it
-- Note patterns the Generator should follow (e.g., existing component structure, API conventions)
+- For bugs/tasks: find the relevant code, understand the current behavior, identify likely causes
+- For features: understand what exists so the plan builds on it, not duplicates it
+- Note patterns the Generator should follow
 
 **Greenfield project (no code yet):**
 - Web search for similar products and competing solutions
-- Look for established patterns in the domain (e.g., "task management" → boards, lists, calendars)
+- Look for established patterns in the domain
 - Identify common features users expect in this category
-- Find design inspiration and differentiation opportunities
+- Find differentiation opportunities
 
 **Always:**
-- Review prior ADE plans in `.ade/docs/` to maintain continuity with previous work
-- Note what the user's initial description already tells you — don't re-ask things they've already answered
+- Review prior ADE plans in `.ade/docs/` to maintain continuity
+- Note what the user's initial description already tells you — don't re-ask things they've answered
 
-**Present your findings.** Before moving to questions, share a brief summary of what you learned from research. This shows the user you've done homework and gives them a chance to correct wrong assumptions early.
-
-Example:
-> "I looked at your current codebase — you're running Next.js with Prisma and PostgreSQL, and you already have auth set up via NextAuth. I also looked at a few competing apps in this space. Here's what I found that's relevant: [findings]. A couple questions before I write the plan..."
+**Present your findings.** Share a brief summary before moving to questions. For small scope, this might be one sentence ("I found the bug — it's in `auth.ts:42`, the token expiry check is off by one"). For large scope, it might be a paragraph with research findings.
 
 ## Step 3: Ask Questions
 
-Ask questions one at a time with suggested answers. Start with 2-3 essential questions, then decide if more are needed based on how specific the user's responses are.
+Ask questions one at a time with suggested answers. How many depends on scope.
 
 **Question format — always offer multiple choice with an open option:**
 
 ```
-Who is the primary audience for this app?
+What's most important for this feature?
 
-  a) Internal team tool — employees, known users, no public signups
-  b) Consumer-facing — public signups, growth matters, scale concerns
-  c) B2B SaaS — organizations as customers, multi-tenancy
+  a) Speed — ship fast, polish later
+  b) Quality — get it right the first time, take longer
+  c) Flexibility — make it easy to change and extend
   d) Something else — tell me more
 ```
 
-**Essential questions (always ask):**
+**For large scope (3-5+ questions):**
+1. **Audience** — Who will use this?
+2. **Core value** — What's the one thing this must do really well?
+3. **Key constraint** — Anything that limits choices? (Timeline, tech, platform)
+4. **Feature priorities** — Which matter most? (List from research, ask to rank)
+5. **AI integration** — Any AI-powered features? (Suggest specific opportunities)
+6. **Success criteria** — How will you know it's done?
 
-1. **Audience** — Who will use this? (Determines scope, auth, scale requirements)
-2. **Core value** — What's the one thing this must do really well? (Anchors Phase 1)
-3. **Key constraint** — Anything that limits choices? (Timeline, existing tech, budget, platform)
+**For medium scope (1-3 questions):**
+1. **Goal clarity** — Confirm what the feature should do (especially if the request is ambiguous)
+2. **Constraints** — Anything that affects approach? (Must integrate with X, needs to work on mobile, etc.)
+3. **Priority** — What matters most — speed, quality, or flexibility?
 
-**Follow-up questions (ask if answers are vague or scope is large):**
-
-4. **Feature priorities** — Which of these matter most? (List features from research, ask to rank)
-5. **AI integration** — Any AI-powered features? (Suggest specific opportunities based on the domain)
-6. **Success criteria** — How will you know it's done? (Helps define the finish line)
-
-**Adaptive depth:**
-- If the user gives detailed, specific answers → fewer questions, move to plan
-- If answers are vague ("just make it good") → ask more follow-ups to clarify
-- If the user provided a detailed brief upfront → skip to confirming your understanding, then plan
+**For small scope (0-1 questions):**
+- If the task is clear from context + research, skip questions entirely. Confirm your understanding and write the plan.
+- If ambiguous, ask one clarifying question.
 
 **Rules:**
 - One question per message
-- Prefer multiple choice with suggested answers — easier than open-ended
+- Prefer multiple choice with suggested answers
 - Don't ask about things the user already told you
 - Don't ask about technical implementation — that's the Generator's job
 - Suggested answers should be informed by your research, not generic
+- Read the room — if the user is giving detailed answers, ask fewer questions
 
 ## Step 4: Propose Approaches (When Ambiguous)
 
-If research or answers reveal a genuine fork — two or more meaningfully different product directions — propose 2-3 approaches before writing the plan.
+If research or answers reveal a genuine fork — two or more meaningfully different directions — propose 2-3 approaches before writing the plan. This mostly applies to medium and large scope.
 
 **When to propose:**
-- The user's idea could go in fundamentally different directions (e.g., "collaboration tool" → real-time like Figma vs. async like Notion)
+- The work could go in fundamentally different directions
 - Research found competing patterns with real trade-offs
 - The scope is large enough that phasing strategy matters
 
 **When NOT to propose:**
-- The direction is clear from the user's answers
+- The direction is clear
 - There's an obviously best approach
-- The differences are implementation details (the Generator's problem, not the plan's)
+- The differences are implementation details (the Generator's problem)
+- Small scope — just pick the right approach and go
 
 **Format:**
 ```
-Based on your answers and what I found researching [domain], I see two directions:
+Based on what I found, I see two directions:
 
 **A) [Direction name]** — [2-3 sentence description]. Prioritizes [X] at the cost of [Y].
 
@@ -129,44 +132,62 @@ Which direction, or a mix?
 
 ## Step 5: Write the Plan
 
-Write the plan to `.ade/docs/plans/plan-YYYY-MM-DD.md`.
+Write the plan to `.ade/docs/plans/plan-YYYY-MM-DD.md`. Structure scales with scope.
 
-### Frontmatter
+### Frontmatter (all scopes)
 
 ```yaml
 ---
-project: [Project Name]
+project: [Name or short description]
 date: [YYYY-MM-DD]
+scope: [large | medium | small]
 ticket: [TICKET-ID]         # Only if commits_style is jira
 status: draft
 ---
 ```
 
-### Required Sections
+### Large Scope — Full Product Plan
 
-**Vision:** 2-3 sentences describing what this product is and who it serves. The vision anchors all feature decisions — if a feature doesn't serve the vision, it doesn't belong in the plan.
+**Goal:** 2-3 sentences describing what this is and who it serves.
 
-**Features:** Organized by phase (Phase 1, Phase 2, etc.). Phase 1 is the core experience — the minimum set of features that make the product useful. Later phases add depth, collaboration, and advanced capabilities.
+**Features:** Organized by phase (Phase 1, Phase 2, etc.). Phase 1 is the core experience. Later phases add depth.
 
-**User Stories:** Per feature, in "As a [user], I want to [action] so that [benefit]" format. 2-4 user stories per feature covering the primary interactions. User stories define what the Generator builds and what the Evaluator tests against.
+**User Stories:** Per feature, "As a [user], I want to [action] so that [benefit]" format. 2-4 per feature.
 
-**Success Criteria:** What "done" looks like. Measurable and specific — "users can create and manage tasks" rather than "the app works well."
+**Success Criteria:** What "done" looks like. Measurable and specific.
 
-See `references/plan-examples.md` for a complete example plan.
+### Medium Scope — Feature Plan
+
+**Goal:** 1-2 sentences describing what this feature does and why.
+
+**Deliverables:** List of concrete things to build. No phases needed unless the feature is large enough to split.
+
+**User Stories:** 2-4 user stories covering the key interactions.
+
+**Acceptance Criteria:** Specific conditions that must be true when this is done.
+
+### Small Scope — Task Plan
+
+**Goal:** One sentence — what needs to happen and why.
+
+**What to change:** Brief description of the work. For bugs: what's broken, where, and what "fixed" looks like. For tasks: what to do.
+
+**Done when:** 1-3 clear acceptance criteria.
+
+See `references/plan-examples.md` for examples at each scope.
 
 ### Planning Principles (from Anthropic Research)
 
 **DO:**
-- Go big on scope — push boundaries of the app idea
-- Include user stories showing the user's perspective for every feature
-- Identify opportunities to integrate AI-powered features
-- Organize features into phases with clear progression
-- Keep everything at the product level — deliverables, not implementation
+- Scale ambition to scope — go big on large projects, stay focused on tasks
+- Include user stories for medium and large scope
+- Identify opportunities to integrate AI-powered features (large scope)
+- Keep everything at the deliverable level — what, not how
 
 **DO NOT:**
 - Specify technical implementation details (frameworks, libraries, file structures)
 - Create code architecture or database schemas
-- Write sprint contracts or task breakdowns with time estimates
+- Run a heavyweight planning process for a simple task
 - Approve the plan without the user's explicit sign-off
 
 ## Step 6: User Review
@@ -179,11 +200,10 @@ After writing the plan, tell the user:
 
 ### Common Iteration Patterns
 
-- **Scope adjustment** — Add or remove features. Phase 1 should always contain the minimum viable experience
-- **Phase reordering** — Move features between phases based on priority
-- **Clarification** — Expand user stories for a specific feature
-- **AI integration** — Identify AI-powered feature opportunities the user hasn't considered
-- **Splitting features** — Break large features into sub-features the Evaluator can test independently
+- **Scope adjustment** — Add or remove deliverables
+- **Clarification** — Expand user stories or acceptance criteria
+- **Splitting** — Break large deliverables into testable sub-deliverables
+- **Rescoping** — If the user realizes the scope is bigger/smaller than initially assessed, adjust the plan structure
 
 Once the user approves, update the plan status to `approved`.
 
@@ -202,24 +222,24 @@ commits_style: conventional
 
 ## Common Pitfalls
 
-**Planning too small:** Anthropic research emphasizes "go big on scope." A plan with only 2-3 features underutilizes the harness. Push for ambitious scope — the Generator and Evaluator handle the complexity.
+**Overplanning small work:** A bug fix doesn't need phases, user stories, and success criteria. Goal + what to change + done when. Keep it proportional.
 
-**Sneaking in implementation details:** "using React components" or "REST API with Express" are implementation details. Rephrase as features: "a responsive web interface," "a server API for data access."
+**Underplanning large work:** A full app with 2-3 bullet points isn't a plan. Push for ambitious scope with phased features and user stories.
 
-**Skipping user stories:** Every feature needs user stories. Without them, the Generator has no clear target and the Evaluator has nothing to test against.
+**Sneaking in implementation details:** "using React components" or "REST API with Express" are implementation details. Rephrase as deliverables: "a responsive web interface," "a server API for data access."
 
-**Vague success criteria:** "The app should work well" is not measurable. Prefer: "All user flows complete in under 3 clicks."
+**Skipping user stories (medium/large scope):** Every feature needs user stories. Without them, the Generator has no clear target and the Evaluator has nothing to test against.
 
 **Not researching first:** Asking questions without context leads to generic plans. Research the codebase or domain first so your questions are specific and informed.
 
-**Asking too many questions:** If the user gave a detailed brief, don't interrogate them. Confirm your understanding and write the plan. Read the room.
+**Asking too many questions:** If the user gave a clear, detailed brief, don't interrogate. Confirm understanding and write the plan.
 
 ## After Planning
 
-Once approved, use `/ade:execute` to launch the Generator + Evaluator agent team. The Generator implements features one by one, the Evaluator tests and scores each against rubrics. They iterate via SendMessage until all criteria pass.
+Once approved, use `/ade:execute` to launch the Generator + Evaluator agent team. The Generator implements deliverables one by one, the Evaluator tests and scores each against rubrics. They iterate via SendMessage until all criteria pass.
 
 Use `/ade:status` at any time to check progress. Use `/ade:done` to archive the plan when complete.
 
 ## References
 
-- **`references/plan-examples.md`** — Complete example plan with proper structure, vision, phased features, user stories, and success criteria
+- **`references/plan-examples.md`** — Example plans at each scope level (large, medium, small)
