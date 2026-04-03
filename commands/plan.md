@@ -16,7 +16,7 @@ Read `.claude/ade.local.md` if it exists. Note the `commits_style` value.
 
 **Step 3: Invoke the planner**
 
-Use the ade-planner agent to plan: $ARGUMENTS
+Spawn the ade-planner as a **subagent** using the Agent tool (NOT TeamCreate — the planner is one-shot, not a team member). Pass the user's request: $ARGUMENTS
 
 The planner follows the methodology in `${CLAUDE_PLUGIN_ROOT}/skills/ade-planning/SKILL.md`. It will:
 
