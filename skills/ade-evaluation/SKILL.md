@@ -1,7 +1,7 @@
 ---
 name: ade-evaluation
 description: This skill should be used when the user asks about evaluation methodology, scoring rubrics, testing tools, "how does scoring work", "evaluation criteria", "rubric format", "add a rubric", "create testing tool", "evaluate my feature", "run evaluation", "why did evaluation fail", or needs guidance on adversarial evaluation, graded scoring, or hard thresholds in the ADE workflow. Make sure to use this skill whenever the user mentions quality assessment, code review scoring, feature validation, or wants to understand why a feature passed or failed evaluation.
-version: 0.1.0
+version: 0.2.0
 ---
 
 # ADE Evaluation
@@ -106,6 +106,8 @@ Testing tools live in two locations:
 | `playwright.md` | UI, web pages, user interactions | Playwright MCP server, falls back to curl |
 | `api-tester.md` | REST/GraphQL endpoints | curl with jq for response verification |
 | `unit-test-runner.md` | All application code | Auto-detects test framework (jest, vitest, pytest, etc.) |
+
+**Playwright MCP:** The plugin ships a `.mcp.json` that configures Playwright MCP automatically. If the MCP server fails to start (e.g., Node.js not installed), the evaluator falls back to curl and Bash-based testing. No manual setup required for most environments.
 
 ### Testing Tool Format
 
