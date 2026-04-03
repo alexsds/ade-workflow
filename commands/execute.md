@@ -20,13 +20,29 @@ Update the plan's frontmatter status from `draft`/`approved` to `in-progress`.
 
 **Step 4: Launch the agent team**
 
-Create an agent team with two members:
+Use TeamCreate to create the build team:
 
-1. **Generator** (ade-generator agent): Implements features from the plan one at a time, commits to git, messages the Evaluator when ready for review.
+```
+TeamCreate:
+  name: "ade-build"
+  members:
+    - name: "generator"
+      agent: "ade-generator"
+    - name: "evaluator"
+      agent: "ade-evaluator"
+```
 
-2. **Evaluator** (ade-evaluator agent): Waits for Generator handoffs, loads rubrics from `${CLAUDE_PLUGIN_ROOT}/rubrics/` and `.ade/rubrics/`, loads testing tools from `${CLAUDE_PLUGIN_ROOT}/testing-tools/` and `.ade/testing-tools/`, scores features against rubric criteria, sends feedback to Generator.
+Tell the Generator to start with the first feature in the plan.
 
-The Generator and Evaluator communicate via SendMessage. The Generator builds a feature, messages the Evaluator. The Evaluator tests and scores it. If any rubric criterion is below threshold, the Evaluator sends failure details back. The Generator iterates until all criteria pass, then moves to the next feature.
+**How the team communicates:**
+
+1. Generator reads the plan, implements a feature, self-verifies, commits to git
+2. Generator sends to evaluator via SendMessage: feature name, files changed, how to test
+3. Evaluator loads rubrics from `${CLAUDE_PLUGIN_ROOT}/rubrics/` and `.ade/rubrics/`, loads testing tools from `${CLAUDE_PLUGIN_ROOT}/testing-tools/` and `.ade/testing-tools/`
+4. Evaluator tests the feature, scores against rubric criteria, sends pass/fail + feedback to generator
+5. If any criterion fails: Generator iterates and re-submits
+6. If all pass: Generator moves to next feature in the plan
+7. Loop until all features are complete
 
 **Step 5: Monitor progress**
 

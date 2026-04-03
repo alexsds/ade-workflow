@@ -1,5 +1,5 @@
 ---
-description: Generate a product-level plan for an app idea
+description: Research context, ask questions, and generate a product-level plan for an app idea
 argument-hint: [app idea]
 ---
 
@@ -16,13 +16,15 @@ Read `.claude/ade.local.md` if it exists. Note the `commits_style` value.
 
 **Step 3: Invoke the planner**
 
-Use the ade-planner agent to create a product-level plan for: $ARGUMENTS
+Use the ade-planner agent to plan: $ARGUMENTS
 
-The planner will:
-- If commits_style is jira, ask the user for a ticket number
-- Expand the idea into features with user stories
-- Write the plan to `.ade/docs/plans/plan-YYYY-MM-DD.md`
-- Ask the user to review and approve
+The planner follows the methodology in `${CLAUDE_PLUGIN_ROOT}/skills/ade-planning/SKILL.md`. It will:
+
+1. **Research** — Explore the codebase (if existing project) or search for similar products (if greenfield). Check prior plans in `.ade/docs/`. Share findings with the user.
+2. **Ask questions** — Ask 2-3 essential questions one at a time with multiple-choice suggested answers. Ask follow-ups if answers are vague. If `commits_style` is jira, ask for the ticket number.
+3. **Propose approaches** — If research reveals a genuine fork in direction, present 2-3 options with trade-offs and a recommendation. Skip if direction is clear.
+4. **Write the plan** — Expand into features with user stories, write to `.ade/docs/plans/plan-YYYY-MM-DD.md`.
+5. **Ask for review** — Present the plan and wait for user approval.
 
 **Step 4: Wait for approval**
 
