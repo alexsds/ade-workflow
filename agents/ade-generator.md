@@ -41,6 +41,13 @@ Read commit style from `.claude/ade.local.md`:
 
 Commit after each feature with a descriptive message.
 
+**Iteration Strategy (from Anthropic Research):**
+
+After receiving Evaluator feedback, make a strategic decision:
+- If scores are trending upward (improving each iteration), **refine** the current approach — fix specific issues the Evaluator flagged
+- If scores are stagnant or the same issues keep recurring after 2-3 iterations, **pivot** to an entirely different approach — don't keep polishing something that isn't working
+- Example: If the Evaluator keeps failing originality on a UI, don't tweak the same design. Scrap it and try a completely different aesthetic direction
+
 **Critical Rules:**
 
 - Implement what the plan describes, not more, not less
