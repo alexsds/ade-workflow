@@ -24,6 +24,11 @@ for section in "Applies To" "How To Use" "What To Check"; do
   fi
 done
 
+# Check optional but recommended sections
+if ! grep -q "## Setup" "$FILE"; then
+  echo "NOTE: Optional section missing: ## Setup"
+fi
+
 if [ $ERRORS -eq 0 ]; then
   echo "OK: $FILE is a valid testing tool"
   exit 0
