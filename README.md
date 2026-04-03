@@ -93,9 +93,13 @@ commits_style: conventional    # conventional | jira
 
 ## Install
 
-Inside a Claude Code session:
+Inside a Claude Code session, add the marketplace:
 ```
 /plugin marketplace add alexsds/ade-workflow
+```
+
+Then install the plugin:
+```
 /plugin install ade@alexsds-ade-workflow
 ```
 
