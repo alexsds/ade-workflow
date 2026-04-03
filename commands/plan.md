@@ -3,7 +3,7 @@ description: Research context, ask questions, and create a plan scaled to the sc
 argument-hint: [anything]
 ---
 
-You are executing the ADE planning workflow.
+You are executing the ADE planning workflow. Follow these steps yourself — do NOT spawn a subagent for planning. The planner needs to ask the user questions interactively, which requires staying in the main conversation.
 
 **Step 1: Check for project initialization**
 
@@ -14,11 +14,11 @@ Check if `.ade/` directory exists. If not, run:
 
 Read `.claude/ade.local.md` if it exists. Note the `commits_style` value.
 
-**Step 3: Invoke the planner**
+**Step 3: Read the planning methodology**
 
-Spawn the ade-planner as a **subagent** using the Agent tool (NOT TeamCreate — the planner is one-shot, not a team member). Pass the user's request: $ARGUMENTS
+Read `${CLAUDE_PLUGIN_ROOT}/skills/ade-planning/SKILL.md` and follow it step by step for: $ARGUMENTS
 
-The planner follows the methodology in `${CLAUDE_PLUGIN_ROOT}/skills/ade-planning/SKILL.md`. It will:
+The methodology covers:
 
 1. **Assess scope** — Determine if this is large (full app), medium (feature), or small (task/bug). This controls the depth of everything that follows.
 2. **Research** — Explore the codebase, find relevant code, or search for similar products. Share findings with the user.
